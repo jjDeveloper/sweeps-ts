@@ -2,16 +2,16 @@
   import { Tile, Mine, Flag } from './sweeps'
   export let tile: Tile = undefined;
   enum FlagColor {
-    0 = 'lightgrey',
-    1 = 'orange',
-    2 = 'yellow',
-    3 = 'blue',
-    4 = 'green',
-    5 = 'indigo',
-    6 = 'violet',
-    7 = 'purple',
-    8 = 'ligtblue',
-    9 = 'maroon'
+    'lightgrey',
+    'orange',
+    'yellow',
+    'blue',
+    'green',
+    'indigo',
+    'violet',
+    'purple',
+    'ligtblue',
+    'maroon'
   }
 
   const contents = () => {

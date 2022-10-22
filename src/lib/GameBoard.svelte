@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Tile, Mine, Flag } from './sweeps'
+  import type { Tile } from './sweeps'
   import GameTile from './GameTile.svelte'
   export let tiles: Tile[][] = undefined;
 </script>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { games } from './gamestore'
   import GameBoard from './GameBoard.svelte'
-  import { Board, GameLevel } from './sweeps.ts'
+  import { Board, GameLevel } from './sweeps.js'
     const board = new Board(GameLevel.one);
   const boardTwo = new Board(GameLevel.two);
   const boards = [board, boardTwo];

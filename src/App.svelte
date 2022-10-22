@@ -3,8 +3,8 @@
   import Counter from './lib/Counter.svelte'
   // import GameBoard from './lib/GameBoard.svelte'
   import Game from './lib/Game.svelte'
-  import { Board, GameLevel } from './lib/sweeps.ts'
-  import { games } from './lib/gamestore.ts'
+  import { Board, GameLevel } from './lib/sweeps.js'
+  import { games } from './lib/gamestore.js'
   const board = new Board(GameLevel.one);
   const boardTwo = new Board(GameLevel.two);
   const boards = [board, boardTwo];
