@@ -94,16 +94,7 @@ class Board {
       }
     }
     mines.forEach((mine) => {
-      const isDup = (m: Mine) => {
-        if (arr[m.x][m.y].contents instanceof Mine) {
-          console.log('isDup duplicate');
-          let mn = new Mine(this.rowDepth, this.colDepth);
-          isDup(mn);
-        } else {
-          arr[m.x][m.y].contents = m;
-        }
-      };
-      isDup(mine);
+      arr[mine.x][mine.y].contents = mine
     });
 
     console.log(arr);
@@ -113,8 +104,17 @@ class Board {
 
   private _buildMines(count: number = this.mineCount): Mine[] {
     let mines: Mine[] = [];
+    const isDup = (m: Mine) => {
+      const duplicates = mines.filter((mine) => mine.x === m.x && mine.y === m.y);
+      if (duplicates.length > 0) {
+        console.log('Removing Duplicate', m)
+        isDup(new Mine(this.rowDepth, this.colDepth))
+      } else {
+        mines.push(m)
+      }
+    }
     for (let i = 0; i < count; i++) {
-      mines.push(new Mine(this.rowDepth, this.colDepth));
+      isDup(new Mine(this.rowDepth, this.colDepth));
     }
     return mines;
   }
