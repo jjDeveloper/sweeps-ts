@@ -28,7 +28,7 @@ class Tile {
   y: number;
 
   constructor(coords?: Coordinates) {
-    if (coords !== undefined){
+    if (coords !== undefined) {
       this.x = coords.x;
       this.y = coords.y;
     }
@@ -102,7 +102,7 @@ class Board {
     let tile;
     for (let y = 0; y < this.rowDepth; y++) {
       for (let x = 0; x < this.colDepth; x++) {
-        tile = new Tile({x, y});
+        tile = new Tile({ x, y });
         arr[x][y] = tile;
         tile = undefined;
       }
@@ -180,6 +180,52 @@ class Board {
     });
   }
 }
+interface IGame {
+  level: GameLevel
+}
+enum GameStatus {
+  pregame,
+  playing,
+  over
+}
+class Game {
+  board: Board;
+  status: GameStatus;
 
-export { Board, GameLevel, Mine, Flag, Tile };  export type { TileEventProps };
+  constructor(props: IGame) {
+    this.board = new Board(props.level);
+    this.status = GameStatus.playing;
+  }
+
+  public move(gameMove: TileEventProps): void {
+    if (this.status !== GameStatus.playing) return;
+    if (gameMove.tile.contents instanceof Mine) {
+      console.log('Mine hit, Game over');
+      this.gameOver(gameMove.tile);
+    } else if (gameMove.tile.contents instanceof Flag) {
+      console.log('Revealing Flag');
+      this.flagPlay(gameMove.tile);
+    } else if (gameMove.tile.contents === undefined) {
+      console.log('Revealing empty spaces')
+      this.emptySpacePlay(gameMove.tile);
+    }
+  };
+
+  private gameOver(tile: Tile): void {
+    // this.board.tiles[tile.x][tile.y].status = TileStatus.shown;
+    this.board.tiles.forEach(row=> row.map(tile => tile.status = TileStatus.shown));
+    this.status = GameStatus.over;
+  }
+
+  private flagPlay(tile: Tile) {
+    console.log("Flag Play", tile);
+    this.board.tiles[tile.x][tile.y].status = TileStatus.shown;
+  }
+  private emptySpacePlay(tile: Tile) {
+    console.log("Empty Space Play", tile);
+    this.board.tiles[tile.x][tile.y].status = TileStatus.shown;
+  }
+}
+
+export { Board, GameLevel, Mine, Flag, Tile, Game, TileStatus }; export type { TileEventProps };
 
