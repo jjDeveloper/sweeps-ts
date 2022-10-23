@@ -8,7 +8,7 @@
   {#each tiles as row }
     <div class="board-row">
       {#each row as tile }
-        <GameTile tile={tile} />
+        <GameTile tile={tile} on:tileclick />
       {/each }
     </div>
   {/each }

@@ -12,12 +12,26 @@ enum GameLevel {
   one,
   two,
 }
+enum MouseButton {
+  left = 0,
+  right = 2
+}
+interface TileEventProps {
+  button: MouseButton;
+  tile: Tile;
+}
 
 class Tile {
   contents: Mine | Flag;
   status: TileStatus;
+  x: number;
+  y: number;
 
-  constructor() {
+  constructor(coords?: Coordinates) {
+    if (coords !== undefined){
+      this.x = coords.x;
+      this.y = coords.y;
+    }
     this.status = TileStatus.hidden;
   }
 }
@@ -88,7 +102,7 @@ class Board {
     let tile;
     for (let y = 0; y < this.rowDepth; y++) {
       for (let x = 0; x < this.colDepth; x++) {
-        tile = new Tile();
+        tile = new Tile({x, y});
         arr[x][y] = tile;
         tile = undefined;
       }
@@ -167,4 +181,5 @@ class Board {
   }
 }
 
-export { Board, GameLevel, Mine, Flag, Tile };
+export { Board, GameLevel, Mine, Flag, Tile };  export type { TileEventProps };
+

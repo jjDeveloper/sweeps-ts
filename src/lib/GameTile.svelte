@@ -1,6 +1,10 @@
 <script lang="ts">
+import { createEventDispatcher } from 'svelte';
+
   import { Tile, Mine, Flag } from './sweeps'
+  import type { TileEventProps } from './sweeps'
   export let tile: Tile = undefined;
+  const dispatch = createEventDispatcher();
   enum FlagColor {
     'lightgrey',
     'orange',
@@ -36,8 +40,19 @@
       }
     }
   }
+
+  const handleClick = (event: MouseEvent, t: Tile = tile) => {
+    event.preventDefault();
+    console.log("Handle Tile Click", event.button)
+    console.log("Clicked Tile", t)
+    const tileEvent: TileEventProps = {
+      tile: t,
+      button: event.button
+    }
+    dispatch("tileclick", tileEvent);
+}
 </script>
-<div class="board-column" style={style()}>
+<div class="board-column" style={style()} on:click={handleClick} on:contextmenu={handleClick}>
  <p>{ contents()}</p>
 </div>
 <style>
