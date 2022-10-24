@@ -22,7 +22,7 @@ interface TileEventProps {
 }
 
 class Tile {
-  contents: Mine | Flag;
+  contents: Mine | Marker;
   status: TileStatus;
   x: number;
   y: number;
@@ -49,7 +49,7 @@ class Mine {
   }
 }
 
-class Flag {
+class Marker {
   value: number;
   constructor(touching?: boolean) {
     this.value = touching ? 1 : 0;
@@ -113,7 +113,7 @@ class Board {
 
     console.log(arr);
     this.tiles = arr;
-    this._placeFlags(mines);
+    this._placeMarkers(mines);
   }
 
   private _buildMines(count: number = this.mineCount): Mine[] {
@@ -133,7 +133,7 @@ class Board {
     return mines;
   }
 
-  private _placeFlags(mines: Mine[]) {
+  private _placeMarkers(mines: Mine[]) {
     const touchingTiles: Coordinates[] = [
       { x: -1, y: -1 },
       { x: -1, y: 0 },
@@ -164,12 +164,12 @@ class Board {
 
         console.log('nextCoord', nextCoord);
         if (canPlace(nextCoord)) {
-          if (this.tiles[nextCoord.x][nextCoord.y].contents instanceof Flag) {
+          if (this.tiles[nextCoord.x][nextCoord.y].contents instanceof Marker) {
             this.tiles[nextCoord.x][nextCoord.y].contents.value += 1;
           } else if (
             this.tiles[nextCoord.x][nextCoord.y].contents === undefined
           ) {
-            const flag = new Flag(true);
+            const flag = new Marker(true);
             this.tiles[nextCoord.x][nextCoord.y].contents = flag;
           }
           console.log('placed tile', this.tiles[nextCoord.x][nextCoord.y]);
@@ -202,8 +202,8 @@ class Game {
     if (gameMove.tile.contents instanceof Mine) {
       console.log('Mine hit, Game over');
       this.gameOver(gameMove.tile);
-    } else if (gameMove.tile.contents instanceof Flag) {
-      console.log('Revealing Flag');
+    } else if (gameMove.tile.contents instanceof Marker) {
+      console.log('Revealing Marker');
       this.flagPlay(gameMove.tile);
     } else if (gameMove.tile.contents === undefined) {
       console.log('Revealing empty spaces')
@@ -218,7 +218,7 @@ class Game {
   }
 
   private flagPlay(tile: Tile) {
-    console.log("Flag Play", tile);
+    console.log("Marker Play", tile);
     this.board.tiles[tile.x][tile.y].status = TileStatus.shown;
   }
   private emptySpacePlay(tile: Tile) {
@@ -227,5 +227,5 @@ class Game {
   }
 }
 
-export { Board, GameLevel, Mine, Flag, Tile, Game, TileStatus }; export type { TileEventProps };
+export { Board, GameLevel, Mine, Marker, Tile, Game, TileStatus }; export type { TileEventProps };
 

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { Tile, Mine, Flag, TileStatus } from "./sweeps";
+  import { Tile, Mine, Marker, TileStatus } from "./sweeps";
   import type { TileEventProps } from "./sweeps";
   export let tile: Tile = undefined;
   const dispatch = createEventDispatcher();
-  enum FlagColor {
+  enum MarkerColor {
     "lightgrey",
     "orange",
     "yellow",
@@ -23,7 +23,7 @@
     if (tile) {
       if (tile.contents instanceof Mine) {
         return "M";
-      } else if (tile.contents instanceof Flag) {
+      } else if (tile.contents instanceof Marker) {
         return tile.contents.value;
       } else {
         return "";
@@ -34,16 +34,16 @@
     console.log("Style Ran");
     if (tile && tile.status === TileStatus.shown) {
       if (tile.contents instanceof Mine) {
-        return `background-color: ${FlagColor[9]}; color: red`;
-      } else if (tile.contents instanceof Flag) {
+        return `background-color: ${MarkerColor[9]}; color: red`;
+      } else if (tile.contents instanceof Marker) {
         return `background-color: ${
-          FlagColor[tile.contents.value]
+          MarkerColor[tile.contents.value]
         }; color: black;`;
       } else {
         return "";
       }
     } else if (tile && tile.status === TileStatus.hidden) {
-      return `background-color: ${FlagColor[10]};`;
+      return `background-color: ${MarkerColor[10]};`;
     }
   };
 
@@ -63,6 +63,7 @@
 <div
   class="board-column"
   style={style()}
+  on:keypress={() => handleClick(new MouseEvent('click'))}
   on:click={handleClick}
   on:contextmenu={handleClick}
 >
