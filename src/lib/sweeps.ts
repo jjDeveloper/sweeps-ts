@@ -20,6 +20,17 @@ interface TileEventProps {
   button: MouseButton;
   tile: Tile;
 }
+const touchingTiles: Coordinates[] = [
+  { x: -1, y: -1 },
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+  { x: 0, y: -1 },
+  { x: 0, y: 1 },
+  { x: 1, y: -1 },
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
+];
+
 
 class Tile {
   contents: Mine | Marker;
@@ -134,36 +145,27 @@ class Board {
   }
 
   private _placeMarkers(mines: Mine[]) {
-    const touchingTiles: Coordinates[] = [
-      { x: -1, y: -1 },
-      { x: -1, y: 0 },
-      { x: -1, y: 1 },
-      { x: 0, y: -1 },
-      { x: 0, y: 1 },
-      { x: 1, y: -1 },
-      { x: 1, y: 0 },
-      { x: 1, y: 1 },
-    ];
     mines.forEach((mine) => {
       console.log('current mine', mine);
       let coords: Coordinates;
       for (let i = 0; i < 8; i++) {
         coords = touchingTiles[i];
-        const nextCoord: Coordinates = {
-          x: mine.x + coords.x,
-          y: mine.y + coords.y,
-        };
-        const canPlace = (spot: Coordinates): boolean => {
-          const nonNegative =
-            Object.entries(spot).filter(([, val]) => val >= 0).length === 2;
-          const insideBounds = nonNegative
-            ? spot.x < this.rowDepth && spot.y < this.colDepth
-            : false;
-          return insideBounds;
-        };
+        const nextCoord: Coordinates = this.getCoords(mine, coords);
+        // const nextCoord: Coordinates = {
+        //   x: mine.x + coords.x,
+        //   y: mine.y + coords.y,
+        // };
+        // const canPlace = (spot: Coordinates): boolean => {
+        //   const nonNegative =
+        //     Object.entries(spot).filter(([, val]) => val >= 0).length === 2;
+        //   const insideBounds = nonNegative
+        //     ? spot.x < this.rowDepth && spot.y < this.colDepth
+        //     : false;
+        //   return this.insideBounds(spot)
+        // };
 
         console.log('nextCoord', nextCoord);
-        if (canPlace(nextCoord)) {
+        if (nextCoord) {
           if (this.tiles[nextCoord.x][nextCoord.y].contents instanceof Marker) {
             this.tiles[nextCoord.x][nextCoord.y].contents.value += 1;
           } else if (
@@ -178,6 +180,27 @@ class Board {
 
       console.log(this.tiles);
     });
+  }
+  public touching(tile: Tile): Tile[] {
+    const tiles = [];
+    touchingTiles.map((coords: Coordinates) => {
+      const newCoords = this.getCoords(tile, coords);
+      if (newCoords) {
+        const t = this.tiles[newCoords.x][newCoords.y];
+        tiles.push(t);
+      }
+    })
+    return tiles;
+  }
+  private getCoords = (inCoords: Coordinates, nextCoords: Coordinates): Coordinates | undefined => {
+    const newCoords = { x: inCoords.x + nextCoords.x, y: inCoords.y + nextCoords.y }
+    const inside = this.insideBounds(newCoords); 
+    return inside ? newCoords : undefined;
+  }
+  private insideBounds(coords: Coordinates): boolean {
+    const nonNegative = coords.x >= 0 && coords.y >= 0;
+    const insideBounds = nonNegative ? coords.x < this.rowDepth &&  coords.y < this.rowDepth : false;
+    return insideBounds;
   }
 }
 interface IGame {
